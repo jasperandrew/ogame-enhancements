@@ -7,6 +7,11 @@ Chrome/Edge Extension: [[link]]()
 
 ## Changelog
 
+### 1.1
+
+- Used a 'safer' method than innerHTML to create a button
+- Fixed a CSS bug
+
 ### 1.0
 
 - Initial upload

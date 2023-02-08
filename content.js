@@ -61,7 +61,7 @@
         rule('#countdownresearchDetails { background: #‽; }');
 
         // visual improvements
-        rule('.level, .amount { width: 70%‽; }');
+        rule('.icon .level, .icon .amount { width: 70%‽; }');
         rule('.targetlevel, .targetamount { padding: 0 5px‽; }');
         rule('.targetlevel::before, .targetamount::before { content: "«"; display: inline-block; transform: rotate(90deg); }');
 
@@ -76,8 +76,19 @@
 
         let techDeets = () => {
             let buildWrap = qs(".build-it_wrap");
-            if (buildWrap.innerHTML.toString().includes("Start with DM")) {
-                buildWrap.innerHTML = `<button class="upgrade" disabled="" data-technology="${qs('#technologydetails').attributes['data-technology-id'].value}"><span class="tooltip" title="Not enough resources!">Improve</span></button>`;
+            if (buildWrap.querySelector('a') !== null) {
+                let btn = document.createElement('button');
+                btn.classList.add('upgrade');
+                btn.setAttribute('disabled', '');
+                btn.setAttribute('data-technology', qs('#technologydetails').attributes['data-technology-id'].value);
+                let span = document.createElement('span');
+                span.classList.add('tooltip');
+                span.setAttribute('title', "Not enough resources!");
+                span.innerText = "Improve";
+                btn.appendChild(span);
+                buildWrap.querySelector('a').remove();
+                buildWrap.querySelector('p').remove();
+                buildWrap.appendChild(btn);
             }
         };
         new MutationObserver(techDeets).observe(qs('#technologydetails_content'), { childList: true });

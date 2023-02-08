@@ -1,5 +1,5 @@
 {
-    "manifest_version": 2,
+    "manifest_version": 3,
     "name": "OGame Enchancements",
     "version": "1.0",
     "description": "Provides various visual improvements to the OGame UI, including de-emphasizing premium dark matter features.",

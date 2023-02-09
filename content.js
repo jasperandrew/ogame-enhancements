@@ -3,6 +3,13 @@
     window.OGameEnhancementsHasRun = true;
 
     const RESOURCES = ['metal','crystal','deuterium','energy','food','population','darkmatter'];
+    const MINE_RESOURCES = RESOURCES.slice(0,3);
+    const TIME = {
+        week: { str: 'w', n: 60 * 60 * 24 * 7 },
+        day:  { str: 'd', n: 60 * 60 * 24 },
+        hour: { str: 'h', n: 60 * 60 },
+        min:  { str: 'm', n: 60 }
+    }
 
     let container = document.documentElement || document.body;
     let qs = s => container.querySelector(s);
@@ -13,11 +20,10 @@
             callback(element);
             return true;
         }
-        console.log('not found: ' + selector);
         return false;
     };
     let earlyObserve = (s, f) => {
-        new MutationObserver((_, observer) => {
+        return new MutationObserver((_, observer) => {
             if (!attemptCallback(s, f)) return; // try again
             observer.disconnect(); // done, stop trying
         }).observe(container, { childList: true });
@@ -53,15 +59,6 @@
         st.top = st.left = '7px';
     });
 
-    let secs = (cur, tgt, hrly) => (tgt - cur)/(hrly/3600)
-    let timestr = secs => {
-        let s = Math.floor(secs/3600) + 'h ';
-        secs %= 3600;
-        s += Math.floor(secs/60) + 'm ';
-        secs %= 60;
-        return s + 's';
-    }
-
     document.addEventListener('DOMContentLoaded', () => {
         const styleSheet = document.head.appendChild(document.createElement('style')).sheet;
         let rule = s => styleSheet.insertRule(s.replaceAll('‽', ' !important'));
@@ -86,16 +83,21 @@
         if (!qs('#resources_energy').classList.contains('overmark'))
             rule('#resources_energy::before { content: "+"; }');
 
+        let resourcePerSec = {};
         RESOURCES.forEach(res => {
             let el = qs(`.resource_tile > #${res}_box`);
             let tip = el.title.split('<tr>');
             tip.splice(1,1);
-            console.log(tip);
+            if (RESOURCES.indexOf(res) < 3)
+                resourcePerSec[res] = Number.parseFloat(/\+([\d,]+)/.exec(tip[2])[1].split(',').join(''))/3600;
             el.title = tip.join('<tr>');
         });
-        
 
-        let techDeets = () => {
+        let currentAmount = res => {
+            return Number.parseFloat(qs('.resource_tile #resources_' + res).innerText.split(',').join(''));
+        }
+
+        let unDarkMatterifyBuildButton = () => {
             let buildWrap = qs(".build-it_wrap");
             if (buildWrap.querySelector('a') !== null) {
                 let btn = document.createElement('button');
@@ -112,7 +114,48 @@
                 buildWrap.appendChild(btn);
             }
         };
-        new MutationObserver(techDeets).observe(qs('#technologydetails_content'), { childList: true });
+
+        let displayTimeUntilBuildable = () => {
+            let resourceCosts = {};
+            let processCost = costElement => {
+                MINE_RESOURCES.forEach(res => {
+                    if (costElement.classList.contains(res))
+                        resourceCosts[res] = costElement.getAttribute('data-value');
+                });
+            }
+
+            let costList = qs('#technologydetails .costs ul');
+            if (costList === null) return;
+            for (let i = 0; i < costList.childElementCount; i++)
+                processCost(costList.children[i]);
+
+            let secs = 0;
+            for (const res in resourceCosts) {
+                let secsNeeded = (resourceCosts[res] - currentAmount(res)) / resourcePerSec[res];
+                if (secsNeeded > secs)
+                    secs = secsNeeded;
+            }
+
+            let timeStr = 'now';
+            if (secs > 0) {
+                timeStr = '';
+                for (const t in TIME) {
+                    let amt = Math.floor(secs / TIME[t].n);
+                    if (amt > 0) timeStr += amt + TIME[t].str + ' ';
+                    secs %= TIME[t].n;
+                }
+                if (secs > 0) timeStr += Math.floor(secs) + 's';
+            }
+            console.log(timeStr);
+        };
+
+        new MutationObserver(() => {
+            unDarkMatterifyBuildButton();
+        }).observe(qs('#technologydetails_content'), { childList: true });
+
+        new MutationObserver(() => {
+            displayTimeUntilBuildable();
+        }).observe(qs('.OGameClock'), { childList: true });
     });
 
 })();

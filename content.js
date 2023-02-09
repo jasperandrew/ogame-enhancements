@@ -115,28 +115,14 @@
             }
         };
 
-        let displayTimeUntilBuildable = () => {
-            let resourceCosts = {};
-            let processCost = costElement => {
-                MINE_RESOURCES.forEach(res => {
-                    if (costElement.classList.contains(res))
-                        resourceCosts[res] = costElement.getAttribute('data-value');
-                });
-            }
-
-            let costList = qs('#technologydetails .costs ul');
-            if (costList === null) return;
-            for (let i = 0; i < costList.childElementCount; i++)
-                processCost(costList.children[i]);
-
-            let secs = 0;
-            for (const res in resourceCosts) {
-                let secsNeeded = (resourceCosts[res] - currentAmount(res)) / resourcePerSec[res];
-                if (secsNeeded > secs)
-                    secs = secsNeeded;
-            }
-
-            let timeStr = 'now';
+        let buildableTimeElement = null;
+        let updateBuildableCountdown = () => {
+            if (buildableTimeElement === null) return;
+            if (buildableTimeElement.innerText === 'now') return;
+            if (buildableTimeElement.innerText === 'Unknown') return;
+            
+            let secs = Number.parseInt(buildableTimeElement.getAttribute('data-end')) - (Date.now().valueOf() / 1000);
+            timeStr = 'now';
             if (secs > 0) {
                 timeStr = '';
                 for (const t in TIME) {
@@ -146,15 +132,16 @@
                 }
                 if (secs > 0) timeStr += Math.floor(secs) + 's';
             }
-            console.log(timeStr);
+            buildableTimeElement.innerText = timeStr;
         };
 
         new MutationObserver(() => {
             unDarkMatterifyBuildButton();
+            buildableTimeElement = qs('.possible_build_start time');
         }).observe(qs('#technologydetails_content'), { childList: true });
 
         new MutationObserver(() => {
-            displayTimeUntilBuildable();
+            updateBuildableCountdown();
         }).observe(qs('.OGameClock'), { childList: true });
     });
 

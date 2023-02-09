@@ -9,6 +9,8 @@ Chrome/Edge Extension: [[link]]()
 
 - fix buttons on defense page saying "Improve"
 - resource countdowns
+- remove "available" from resource tooltip
+- add browser menu for options
 
 ## Changelog
 

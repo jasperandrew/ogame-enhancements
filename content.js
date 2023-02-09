@@ -2,7 +2,8 @@
     if (window.OGameEnhancementsHasRun) return; // Ensure this code only runs once
     window.OGameEnhancementsHasRun = true;
 
-    console.log('init');
+    const RESOURCES = ['metal','crystal','deuterium','energy','food','population','darkmatter'];
+
     let container = document.documentElement || document.body;
     let qs = s => container.querySelector(s);
 
@@ -12,6 +13,7 @@
             callback(element);
             return true;
         }
+        console.log('not found: ' + selector);
         return false;
     };
     let earlyObserve = (s, f) => {
@@ -20,8 +22,6 @@
             observer.disconnect(); // done, stop trying
         }).observe(container, { childList: true });
     };
-
-    console.log('run');
 
     // hide header (no commander)
     earlyObserve('#mmonetbar', el => {
@@ -43,17 +43,30 @@
             .forEach(el => el.style.color = 'inherit'); // de-colorize premium menu items
     });
 
+    earlyObserve('.resource_tile.population', el => {
+        el.parentElement.insertBefore(el, qs('.resource_tile.darkmatter')); // move population stat right of food
+    });
+
     earlyObserve('#tutorialiconcomponent #helper a', el => {
         let st = el.style;
         st.width = st.height = st.fontSize = st.lineHeight = '15px';
         st.top = st.left = '7px';
     });
 
+    let secs = (cur, tgt, hrly) => (tgt - cur)/(hrly/3600)
+    let timestr = secs => {
+        let s = Math.floor(secs/3600) + 'h ';
+        secs %= 3600;
+        s += Math.floor(secs/60) + 'm ';
+        secs %= 60;
+        return s + 's';
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
         const styleSheet = document.head.appendChild(document.createElement('style')).sheet;
         let rule = s => styleSheet.insertRule(s.replaceAll('‽', ' !important'));
 
-        // hide footer (why is this faster than with earlyObserver???)
+        // hide footer (why is this faster than with earlyObserve???)
         rule('#siteFooter { display: none‽; }');
         rule('#chatBar { bottom: 0‽; }'); // move chatbar down
 
@@ -61,10 +74,9 @@
         rule('#countdownresearchDetails { background: #‽; }');
 
         // visual improvements
-        rule('.icon .level, .icon .amount { width: 70%‽; }');
-        rule('.targetlevel, .targetamount { padding: 0 5px‽; }');
+        rule('.icon .level, .icon .amount { padding: 0 3px‽; width: 60%‽; border-top-left-radius: 7px‽; }');
+        rule('.icon .targetlevel, .icon .targetamount { padding: 0 3px‽; width: 60%‽; border-top-left-radius: 7px‽; }');
         rule('.targetlevel::before, .targetamount::before { content: "«"; display: inline-block; transform: rotate(90deg); }');
-
 
         rule('#resources_metal { color: #9f9c8d‽; }');
         rule('#resources_crystal { color: #a2c3e5‽; }');
@@ -73,6 +85,15 @@
         rule('#resources_darkmatter { color: #736e79‽; }');
         if (!qs('#resources_energy').classList.contains('overmark'))
             rule('#resources_energy::before { content: "+"; }');
+
+        RESOURCES.forEach(res => {
+            let el = qs(`.resource_tile > #${res}_box`);
+            let tip = el.title.split('<tr>');
+            tip.splice(1,1);
+            console.log(tip);
+            el.title = tip.join('<tr>');
+        });
+        
 
         let techDeets = () => {
             let buildWrap = qs(".build-it_wrap");

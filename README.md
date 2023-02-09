@@ -14,6 +14,12 @@ Chrome/Edge Extension: [[link]]()
 
 ## Changelog
 
+### 1.1
+
+- Made "construction possible" count down
+- Removed redundant "Available" line in resource box tooltip
+- Other minor tweaks
+
 ### 1.0
 
 - Initial upload

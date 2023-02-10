@@ -14,6 +14,11 @@ Chrome/Edge Extension: [[link]]()
 
 ## Changelog
 
+### 1.2
+
+- Fixed a bug causing it to break on a regex expression
+- Fixed a minor CSS bug
+
 ### 1.1
 
 - Made "construction possible" count down

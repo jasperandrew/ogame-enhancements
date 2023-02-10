@@ -89,13 +89,9 @@
             let tip = el.title.split('<tr>');
             tip.splice(1,1);
             if (RESOURCES.indexOf(res) < 3)
-                resourcePerSec[res] = Number.parseFloat(/\+([\d,]+)/.exec(tip[2])[1].split(',').join(''))/3600;
+                resourcePerSec[res] = Number.parseFloat(/\+?([\d,]+)/.exec(tip[2])[1].split(',').join(''))/3600;
             el.title = tip.join('<tr>');
         });
-
-        let currentAmount = res => {
-            return Number.parseFloat(qs('.resource_tile #resources_' + res).innerText.split(',').join(''));
-        }
 
         let unDarkMatterifyBuildButton = () => {
             let buildWrap = qs(".build-it_wrap");
@@ -142,6 +138,7 @@
 
         new MutationObserver(() => {
             updateBuildableCountdown();
+            console.log('blah');
         }).observe(qs('.OGameClock'), { childList: true });
     });
 

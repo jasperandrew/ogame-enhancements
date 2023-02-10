@@ -72,7 +72,7 @@
 
         // visual improvements
         rule('.icon .level, .icon .amount { padding: 0 3px‽; width: 60%‽; border-top-left-radius: 7px‽; }');
-        rule('.icon .targetlevel, .icon .targetamount { padding: 0 3px‽; width: 60%‽; border-top-left-radius: 7px‽; }');
+        rule('.icon .targetlevel, .icon .targetamount { padding: 0 3px‽; width: 60%‽; }');
         rule('.targetlevel::before, .targetamount::before { content: "«"; display: inline-block; transform: rotate(90deg); }');
 
         rule('#resources_metal { color: #9f9c8d‽; }');

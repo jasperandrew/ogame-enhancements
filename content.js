@@ -93,6 +93,28 @@
             el.title = tip.join('<tr>');
         });
 
+        let reduceNumber = num => {
+            num = Number.parseFloat(num);
+            if (!Number.isFinite(num)) return null; // invalid
+            num = Number.parseFloat(num.toPrecision(3));
+            let n = 0;
+            while(num >= 1000){
+                num /= 1000;
+                n++;
+            }
+            if (n > 5) return null; // too big
+            
+            return num.toString() + ['','K','M','B','T','Q'][n];
+        };
+
+        let improveResourceCostDisplay = () => {
+            document.querySelectorAll('li.resource').forEach(li => {
+                let numStr = reduceNumber(li.getAttribute('data-value'));
+                if (numStr == null) return;
+                li.innerText = numStr;
+            });
+        };
+
         let unDarkMatterifyBuildButton = () => {
             let buildWrap = qs(".build-it_wrap");
             if (buildWrap.querySelector('a') !== null) {
@@ -132,8 +154,9 @@
         };
 
         new MutationObserver(() => {
-            unDarkMatterifyBuildButton();
             buildableTimeElement = qs('.possible_build_start time');
+            unDarkMatterifyBuildButton();
+            improveResourceCostDisplay();
         }).observe(qs('#technologydetails_content'), { childList: true });
 
         new MutationObserver(() => {

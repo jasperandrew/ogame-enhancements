@@ -153,15 +153,17 @@
             buildableTimeElement.innerText = timeStr;
         };
 
-        new MutationObserver(() => {
-            buildableTimeElement = qs('.possible_build_start time');
-            unDarkMatterifyBuildButton();
-            improveResourceCostDisplay();
-        }).observe(qs('#technologydetails_content'), { childList: true });
+        let techdetails = qs('#technologydetails_content');
+        if (techdetails) {
+            new MutationObserver(() => {
+                buildableTimeElement = qs('.possible_build_start time');
+                unDarkMatterifyBuildButton();
+                improveResourceCostDisplay();
+            }).observe(techdetails, { childList: true });
+        }
 
         new MutationObserver(() => {
             updateBuildableCountdown();
-            console.log('blah');
         }).observe(qs('.OGameClock'), { childList: true });
     });
 

@@ -10,6 +10,7 @@ Chrome/Edge Extension: [[link]](https://chromewebstore.google.com/detail/ogame-e
 ### 1.3
 
 - Fixed minor bug where not all premium side menu items were de-emphasized
+- Fixed a non-critical null error and removed an unnecessary log
 
 ### 1.2
 

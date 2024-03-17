@@ -2,17 +2,14 @@
 
 Provides various visual improvements to the OGame UI, including de-emphasizing premium dark matter features.
 
-Firefox Add-On: [[link]](https://addons.mozilla.org/en-US/firefox/addon/ogame-enchancements/)  
-Chrome/Edge Extension: [[link]]()
-
-## To-Do
-
-- fix buttons on defense page saying "Improve"
-- resource countdowns
-- remove "available" from resource tooltip
-- add browser menu for options
+Firefox Add-On: [[link]](https://addons.mozilla.org/en-US/firefox/addon/ogame-enhancements/)  
+Chrome/Edge Extension: [[link]](https://chromewebstore.google.com/detail/ogame-enhancements/akhcmfephjndfhmomkdhignhnedbinmo)
 
 ## Changelog
+
+### 1.3
+
+- Fixed minor bug where not all premium side menu items were de-emphasized
 
 ### 1.2
 

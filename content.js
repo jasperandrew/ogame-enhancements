@@ -45,7 +45,7 @@
     earlyObserve('#darkmatter_box img', el => el.remove()); // de-animate DM icon
     earlyObserve('#menuTable', el => {
         el.insertBefore(qs('#menuTable > :nth-child(5)'), qs('#menuTable > :nth-child(13)')); // move Trader to bottom of menu
-        document.querySelectorAll('#menuTable > :nth-child(n+12) > .premiumHighligt span')
+        document.querySelectorAll('#menuTable .premiumHighligt span')
             .forEach(el => el.style.color = 'inherit'); // de-colorize premium menu items
     });
 
